@@ -4,17 +4,17 @@ import os
 from cryptography.hazmat.primitives import hashes, padding, serialization
 from cryptography.hazmat.primitives.asymmetric import padding, rsa
 
-# спрашивать путь
+
 SETTINGS = {'initial_file': 'file\initial_file.txt', 'encrypted_file': 'file\encrypted_file.txt', 'decrypted_file': 'file\decrypted_file.txt',
             'symmetric_key': 'key\symmetric_key.txt', 'public_key': 'key\public\key.pem', 'secret_key': 'key\secret\key.pem'}
 
 
 def generate_key_pair(private_key_path: str,  public_key_path: str, symmetric_key_path: str) -> None:
-    """Эта функция генерирует пару ключей(ассиметричный и симметричный) гибридной системы, а после сохраняет их в файлы.
+    """Функция создает ассиметричный(закрытый) и симметричный(открытый) ключи гибридной системы, а после сохраняет их в файлы.
 
     Args:
-        private_key_path (str): путь до секретного ключа
-        public_key_path (str): путь до общедоступного ключа
+        private_key_path (str): путь до закрытого ключа
+        public_key_path (str): путь до открытого ключа
         symmetric_key_path (str): путь до симметричного ключа
     """
     private_key = rsa.generate_private_key(
@@ -31,11 +31,8 @@ def generate_key_pair(private_key_path: str,  public_key_path: str, symmetric_ke
     except FileNotFoundError:
         logging.error(f"{private_key_path} not found") if os.path.isfile(
             public_key_path) else logging.error(f"{public_key_path} not found")
-    print("vvedi chislo") ##
-    a = int(input())
-    while(a!=16 or a!=8 or a!=24):
-        a = int(input())
-    symmetric_key = os.urandom(a) 
+    
+    symmetric_key = os.urandom(16) 
     ciphertext = public_key.encrypt(symmetric_key, padding.OAEP(mgf=padding.MGF1(
         algorithm=hashes.SHA256()), algorithm=hashes.SHA256(), label=None))
     try:
