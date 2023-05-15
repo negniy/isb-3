@@ -29,8 +29,8 @@ def generate_key_pair(private_key_path: str,  public_key_path: str, symmetric_ke
             f_c.write(private_key.private_bytes(encoding=serialization.Encoding.PEM,
                                                 format=serialization.PrivateFormat.TraditionalOpenSSL,
                                                 encryption_algorithm=serialization.NoEncryption()))
-    except FileNotFoundError:
-        logging.error(f"{private_key_path} Ошибка работы с файлом") if os.path.isfile(
+    except FileNotFoundError as er:
+        logging.error(f"{er.strerror}, {er.filename}") if os.path.isfile(
             public_key_path) else logging.error(f"{public_key_path} Ошибка работы с файлом")
     symmetric_key = os.urandom(int(size/8))
     ciphertext = public_key.encrypt(symmetric_key, padding.OAEP(mgf=padding.MGF1(
@@ -38,5 +38,5 @@ def generate_key_pair(private_key_path: str,  public_key_path: str, symmetric_ke
     try:
         with open(symmetric_key_path, "wb") as f:
             f.write(ciphertext)
-    except FileNotFoundError:
-        logging.error(f"{symmetric_key_path} Ошибка работы с файлом")
+    except FileNotFoundError as er:
+        logging.error(f"{er.strerror}, {er.filename}")

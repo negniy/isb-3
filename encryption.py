@@ -22,15 +22,15 @@ def encrypt_data(initial_file_path: str, private_key_path: str, encrypted_symmet
         with open(private_key_path, "rb") as f:
             private_key = serialization.load_pem_private_key(
                 f.read(), password=None)
-    except FileExistsError:
-        logging.error(f"{private_key_path} Ошибка работы с файлом")
+    except FileExistsError as er:
+        logging.error(f"{er.strerror}, {er.filename}")
     try:
         with open(encrypted_symmetric_key_path, "rb") as f:
             encrypted_symmetric_key = f.read()
         symmetric_key = private_key.decrypt(encrypted_symmetric_key, padding.OAEP(
             mgf=padding.MGF1(algorithm=hashes.SHA256()), algorithm=hashes.SHA256(), label=None))
-    except FileNotFoundError:
-        logging.error(f"{encrypted_file_path} Ошибка работы с файлом")
+    except FileNotFoundError as er:
+        logging.error(f"{er.strerror}, {er.filename}")
     iv = os.urandom(8)
     cipher = Cipher(algorithms.TripleDES(symmetric_key), modes.CBC(iv))
     encryptor = cipher.encryptor()
@@ -43,6 +43,6 @@ def encrypt_data(initial_file_path: str, private_key_path: str, encrypted_symmet
                 f_out.write(encryptor.update(padded_chunk))
             f_out.write(encryptor.update(padder.finalize()))
             f_out.write(encryptor.finalize())
-    except FileNotFoundError:
-        logging.error(f"{initial_file_path} Ошибка работы с файлом") if os.path.isfile(
+    except FileNotFoundError as er:
+        logging.error(f"{er.strerror}, {er.filename}") if os.path.isfile(
             encrypted_file_path) else logging.error(f"{encrypted_file_path} Ошибка работы с файлом")

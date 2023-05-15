@@ -11,7 +11,7 @@ SETTINGS_FILE = os.path.join('file', 'settings.json')
 
 
 def get_argument():
-    """ Функция, считывающа аргументы
+    """ Функция, считывающая аргументы
 
     Args:
     None
@@ -53,8 +53,8 @@ if __name__ == "__main__":
     try:
         with open(SETTINGS_FILE) as json_file:
             settings = json.load(json_file)
-    except FileNotFoundError:
-        logging.error(f"{SETTINGS_FILE} Ошибка считывания файла")
+    except FileNotFoundError as er:
+        logging.error(f"{er.strerror}, {er.filename}")
     size = int(settings["size"])
     size, correct = check_size(size)
     if not correct:
