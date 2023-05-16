@@ -3,9 +3,9 @@ import json
 import logging
 import os
 
-from generation import generate_key_pair
 from decryption import decrypt_data
 from encryption import encrypt_data
+from generation import generate_key_pair
 
 SETTINGS_FILE = os.path.join('file', 'settings.json')
 
